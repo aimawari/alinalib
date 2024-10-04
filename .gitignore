@@ -1,0 +1,57 @@
+/build/*
+/.cache/*
+
+# Compiled Object files
+*.o
+*.obj
+
+# Compiled Dynamic libraries
+*.so
+*.dll
+*.dylib
+
+# Compiled Static libraries
+*.a
+
+# Executables
+*.out
+*.exe
+*~
+
+# Debug files
+*.dSYM/
+*.debug
+
+# Build directories
+bin/
+obj/
+out/
+
+# IDE files
+*.swp
+*.swo
+*.tmp
+*.temp
+*.log
+*.DS_Store
+
+# CMake files
+CMakeFiles/
+CMakeCache.txt
+*.cmake
+Makefile
+
+# Other
+*.stackdump
+*.pid
+*.pdb
+
+# User-specific files
+*.user
+*.sublime-workspace
+*.sublime-project
+
+# Backup files
+*.bak
+*.orig
+

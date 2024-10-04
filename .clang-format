@@ -1,0 +1,24 @@
+# .clang-format
+BasedOnStyle: LLVM
+IndentWidth: 4                # Set the number of spaces per indentation level
+UseTab: Never                  # Use spaces instead of tabs
+BreakBeforeBraces: Allman     # Use Allman style for brace placement
+ColumnLimit: 0                 # No limit on line length
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+SpacesBeforeTrailingComments: 1 # Add a space before trailing comments
+SpaceBeforeParens: ControlStatements # Space before parentheses for control statements
+SpaceAfterCStyleCast: true     # Space after C-style casts
+AlwaysBreakAfterReturnType: All # Always break after return types
+BreakAfterCondition: true       # Break after the condition in if/for/while
+KeepEmptyLinesAtTheStartOfBlocks: true # Keep empty lines at the start of blocks
+BinPackParameters: false        # Do not pack function parameters
+BinPackArguments: false         # Do not pack function arguments
+CommentPragmas: Attach          # Attach comments to the statement they comment on
+NamespaceIndentation: None      # No indentation for namespaces
+SpacesInParentheses: false      # No spaces within parentheses
+SpacesInCStyleCastParentheses: true # Spaces in C-style cast parentheses
+SortIncludes: false             # Do not sort includes automatically
