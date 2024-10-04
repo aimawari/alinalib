@@ -1,36 +1,47 @@
 #include "alinalib.h"
 
-int main() {
-  alinalib_context *ctx = alinalib_init_context("Example alinalib", 240, 160);
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
 
-  if (!ctx) {
-    alinalib_cleanup_context(ctx);
-    return -1;
-  }
+int main(int argc, char* argv[])
+{
+    alinalib_Context* ctx =
+        alinalib_initContext("Example alinalib", WINDOW_WIDTH, WINDOW_HEIGHT);
 
-  while (!ctx->should_close) {
-    alinalib_start_frame(ctx);
+    if (!ctx)
+    {
+        alinalib_cleanupContext(ctx);
+        return -1;
+    }
 
-    alinalib_clear(ctx, BLACK);
+    while (!ctx->shouldClose)
+    {
+        alinalib_startFrame(ctx);
 
-    alinalib_draw_line(
-        ctx, (alinalib_point){0, ctx->window_height - 20},
-        (alinalib_point){ctx->window_width, ctx->window_height - 20}, GREEN);
+        alinalib_clear(ctx, BLACK);
 
-    int rect_size = 16;
-    alinalib_draw_filled_rectangle(
-        ctx,
-        (alinalib_rect){(ctx->window_width - 16) / 2,
-                        (ctx->window_height - 16) / 2, rect_size, rect_size},
-        RED);
+        alinalib_drawLine(
+            ctx,
+            (alinalib_Point){0, ctx->windowHeight - 20},
+            (alinalib_Point){ctx->windowWidth, ctx->windowHeight - 20},
+            GREEN);
 
-    printf("dt: %.2f\n", ctx->time.delta_time);
-    printf("FPS: %.2f\n", ctx->time.current_fps);
+        int rectSize = 16;
+        alinalib_drawFilledRectangle(
+            ctx,
+            (alinalib_Rect){(ctx->windowWidth - 16) / 2,
+                            (ctx->windowHeight - 16) / 2,
+                            rectSize,
+                            rectSize},
+            RED);
 
-    alinalib_end_frame(ctx);
-  }
+        printf("dt: %.2f\n", ctx->time.deltaTime);
+        printf("FPS: %.2f\n", ctx->time.currentFps);
 
-  alinalib_cleanup_context(ctx);
+        alinalib_endFrame(ctx);
+    }
 
-  return 0;
+    alinalib_cleanupContext(ctx);
+
+    return 0;
 }
