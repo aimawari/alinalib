@@ -65,5 +65,5 @@ Link your project with `libalinalib.a`:
 ## Contributing
 This project is not accepting external contributions at this time, as it is for personal learning and experimentation.
 
-#License
+# License
 This project is licensed under the MIT License. See the `LICENSE` file for details.
