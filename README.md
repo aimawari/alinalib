@@ -52,8 +52,6 @@ After building, you can find the `libalinalib.a` static library in the `build` d
 ```bash
 /path/to/alinalib/build/libalinalib.a
 ```
-
-## Usage
 ## Usage
 Once built, you can include `alinalib.h` directly in your C projects and link the compiled `libalinalib.a` library.
 
