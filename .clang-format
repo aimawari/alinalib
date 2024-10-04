@@ -1,24 +1,48 @@
 # .clang-format
-BasedOnStyle: LLVM
-IndentWidth: 4                # Set the number of spaces per indentation level
-UseTab: Never                  # Use spaces instead of tabs
-BreakBeforeBraces: Allman     # Use Allman style for brace placement
-ColumnLimit: 0                 # No limit on line length
-AllowShortBlocksOnASingleLine: false
-AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: false
-AllowShortIfStatementsOnASingleLine: false
-AllowShortLoopsOnASingleLine: false
-SpacesBeforeTrailingComments: 1 # Add a space before trailing comments
-SpaceBeforeParens: ControlStatements # Space before parentheses for control statements
-SpaceAfterCStyleCast: true     # Space after C-style casts
-AlwaysBreakAfterReturnType: All # Always break after return types
-BreakAfterCondition: true       # Break after the condition in if/for/while
-KeepEmptyLinesAtTheStartOfBlocks: true # Keep empty lines at the start of blocks
-BinPackParameters: false        # Do not pack function parameters
-BinPackArguments: false         # Do not pack function arguments
-CommentPragmas: Attach          # Attach comments to the statement they comment on
-NamespaceIndentation: None      # No indentation for namespaces
-SpacesInParentheses: false      # No spaces within parentheses
-SpacesInCStyleCastParentheses: true # Spaces in C-style cast parentheses
-SortIncludes: false             # Do not sort includes automatically
+
+BasedOnStyle: Google                 # Start with the Google style guide
+
+# Set the indentation width to 4 spaces
+IndentWidth: 4
+
+# Indent case labels in switch statements
+IndentCaseLabels: true
+
+# Keep braces on their own lines (Allman style)
+BraceWrapping:
+  AfterClass: true                   # New line after class definitions
+  AfterControlStatement: true        # New line after control statements (if, for, etc.)
+  AfterEnum: true                    # New line after enum definitions
+  AfterFunction: true                # New line after function definitions
+  AfterNamespace: true                # New line after namespace definitions
+  AfterStruct: true                  # New line after struct definitions
+  BeforeCatch: true                  # New line before catch statements
+  BeforeElse: true                   # New line before else statements
+  IndentBraces: false                # Do not indent braces
+
+# Align pointer and reference operators with the variable type
+PointerAlignment: Left
+
+# Keep function declaration parameters on separate lines
+AllowAllParametersOfDeclarationOnNextLine: false
+
+# Place a space before and after operators
+SpaceBeforeParens: ControlStatements  # Space before parentheses in control statements
+SpacesInParentheses: false            # No spaces inside parentheses
+
+# Avoid putting the closing parenthesis on a new line in multi-line statements
+BinPackArguments: false               # Do not pack function arguments into a single line
+BinPackParameters: false              # Do not pack function parameters into a single line
+
+# Avoid breaking after operators
+BreakBeforeBinaryOperators: None      # No line breaks after binary operators
+
+# Set the column limit to 80 characters per line
+ColumnLimit: 80
+
+# Additional Allman style preferences
+BreakBeforeBraces: Allman            # Ensure braces are always on a new line
+AllowShortBlocksOnASingleLine: false # Disallow short blocks on a single line
+AllowShortFunctionsOnASingleLine: false # Disallow short functions on a single line
+AllowShortCaseLabelsOnASingleLine: false # Disallow short case labels on a single line
+

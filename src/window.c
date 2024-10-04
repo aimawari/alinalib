@@ -1,76 +1,102 @@
 #include "alinalib.h"
 
-alinalib_context *alinalib_init_context(const char *title, int width,
-                                        int height) {
-  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-    printf("Failed to initialized! Error: %s\n", SDL_GetError());
-    return NULL;
-  }
+extern void alinalib__timeInit(alinalib_Time *time);
+extern void alinalib__timeStartFrame(alinalib_Time *time);
+extern void alinalib__timeEndFrame(alinalib_Time *time);
 
-  alinalib_context *ctx = (alinalib_context *)malloc(sizeof(alinalib_context));
+// Initializes the app context with a window and renderer
+alinalib_Context *alinalib_initContext(const char *title, int width, int height)
+{
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
+        printf("Failed to initialized! Error: %s\n", SDL_GetError());
+        return NULL;
+    }
 
-  if (!ctx) {
-    printf("Failed to allocate memory for context\n");
-    return NULL;
-  }
+    alinalib_Context *ctx =
+        (alinalib_Context *)malloc(sizeof(alinalib_Context));
 
-  ctx->window =
-      SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                       width, height, SDL_WINDOW_SHOWN);
-  if (!ctx->window) {
-    printf("Failed to create window! Error: %s\n", SDL_GetError());
+    if (!ctx)
+    {
+        printf("Failed to allocate memory for context\n");
+        return NULL;
+    }
+
+    ctx->window = SDL_CreateWindow(title,
+                                   SDL_WINDOWPOS_CENTERED,
+                                   SDL_WINDOWPOS_CENTERED,
+                                   width,
+                                   height,
+                                   SDL_WINDOW_SHOWN);
+    if (!ctx->window)
+    {
+        printf("Failed to create window! Error: %s\n", SDL_GetError());
+        free(ctx);
+        return NULL;
+    }
+
+    ctx->renderer =
+        SDL_CreateRenderer(ctx->window, -1, SDL_RENDERER_ACCELERATED);
+    if (!ctx->renderer)
+    {
+        printf("Failed to create renderer! Error: %s\n", SDL_GetError());
+        free(ctx);
+        return NULL;
+    }
+
+    ctx->shouldClose = 0;
+    ctx->windowWidth = width;
+    ctx->windowHeight = height;
+
+    alinalib__timeInit(&ctx->time);
+
+    return ctx;
+}
+
+// Cleans up the resources used by the app context
+void alinalib_cleanupContext(alinalib_Context *ctx)
+{
+    if (ctx->renderer)
+    {
+        SDL_DestroyRenderer(ctx->renderer);
+    }
+
+    if (ctx->window)
+    {
+        SDL_DestroyWindow(ctx->window);
+    }
     free(ctx);
-    return NULL;
-  }
-
-  ctx->renderer = SDL_CreateRenderer(ctx->window, -1, SDL_RENDERER_ACCELERATED);
-  if (!ctx->renderer) {
-    printf("Failed to create renderer! Error: %s\n", SDL_GetError());
-    free(ctx);
-    return NULL;
-  }
-
-  ctx->should_close = 0;
-  ctx->window_width = width;
-  ctx->window_height = height;
-
-  alinalib_time_init(&ctx->time);
-
-  return ctx;
+    SDL_Quit();
 }
 
-void alinalib_cleanup_context(alinalib_context *ctx) {
-  if (ctx->renderer) {
-    SDL_DestroyRenderer(ctx->renderer);
-  }
-
-  if (ctx->window) {
-    SDL_DestroyWindow(ctx->window);
-  }
-  free(ctx);
-  SDL_Quit();
+// Starts a new frame for rendering
+void alinalib_startFrame(alinalib_Context *ctx)
+{
+    alinalib__timeStartFrame(&ctx->time);
 }
 
-void alinalib_start_frame(alinalib_context *ctx) {
-  alinalib_time_start_frame(&ctx->time);
-}
+// Ends the current frame and does any necessary updates
+void alinalib_endFrame(alinalib_Context *ctx)
+{
+    SDL_RenderPresent(ctx->renderer);
 
-void alinalib_end_frame(alinalib_context *ctx) {
-  SDL_RenderPresent(ctx->renderer);
+    // Poll event
+    SDL_Event event;
+    while (SDL_PollEvent(&event))
+    {
+        if (event.type == SDL_QUIT)
+        {
+            ctx->shouldClose = 1;
+        }
+        if (event.type == SDL_KEYDOWN)
+        {
+            ctx->shouldClose = 1;
+        }
+        if (event.type == SDL_MOUSEBUTTONDOWN)
+        {
+            ctx->shouldClose = 1;
+        }
+    }
 
-  // Poll event
-  SDL_Event event;
-  while (SDL_PollEvent(&event)) {
-    if (event.type == SDL_QUIT) {
-      ctx->should_close = 1;
-    }
-    if (event.type == SDL_KEYDOWN) {
-      ctx->should_close = 1;
-    }
-    if (event.type == SDL_MOUSEBUTTONDOWN) {
-      ctx->should_close = 1;
-    }
-  }
-
-  alinalib_time_end_frame(&ctx->time);
+    alinalib__timeEndFrame(&ctx->time);
 }
