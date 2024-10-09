@@ -3,6 +3,7 @@
 extern void alinalib__timeInit(alinalib_Time *time);
 extern void alinalib__timeStartFrame(alinalib_Time *time);
 extern void alinalib__timeEndFrame(alinalib_Time *time);
+extern TTF_Font *alinalib__loadDefuaultFont();
 
 // Initializes the app context with a window and renderer
 alinalib_Context *alinalib_initContext(const char *title, int width, int height)
@@ -10,6 +11,12 @@ alinalib_Context *alinalib_initContext(const char *title, int width, int height)
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         printf("Failed to initialized! Error: %s\n", SDL_GetError());
+        return NULL;
+    }
+
+    if (TTF_Init() < 0)
+    {
+        printf("TTF_Init: %s\n", TTF_GetError());
         return NULL;
     }
 
@@ -44,6 +51,8 @@ alinalib_Context *alinalib_initContext(const char *title, int width, int height)
         return NULL;
     }
 
+    ctx->defaultFont = alinalib__loadDefuaultFont();
+
     ctx->shouldClose = 0;
     ctx->windowWidth = width;
     ctx->windowHeight = height;
@@ -65,7 +74,14 @@ void alinalib_cleanupContext(alinalib_Context *ctx)
     {
         SDL_DestroyWindow(ctx->window);
     }
+
+    if (ctx->defaultFont)
+    {
+        TTF_CloseFont(ctx->defaultFont);
+    }
+
     free(ctx);
+    TTF_Quit();
     SDL_Quit();
 }
 

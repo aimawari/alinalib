@@ -12,7 +12,8 @@
 // ║                                                          ║
 // ╚══════════════════════════════════════════════════════════╝
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
+#include <SDL_ttf.h>
 
 // ╔══════════════════════════════════════════════════════════╗
 // ║                          TYPES                            ║
@@ -44,24 +45,24 @@ typedef struct
     int windowWidth;         // Width of the window
     int windowHeight;        // Height of the window
 
+    // Font
+    TTF_Font *defaultFont;
+
     // TIME
     alinalib_Time time;  // Time management data
 } alinalib_Context;
 
-// Struct for representing a color with RGBA values
-typedef struct
-{
-    Uint8 r;  // Red component (0-255)
-    Uint8 g;  // Green component (0-255)
-    Uint8 b;  // Blue component (0-255)
-    Uint8 a;  // Alpha component (0-255)
-} alinalib_Color;
-
-// Type definitions for SDL point and rectangle structures
+// Type definitions
+typedef struct SDL_Color alinalib_Color;    // rgba color
 typedef struct SDL_Point alinalib_Point;    // 2D point
 typedef struct SDL_FPoint alinalib_FPoint;  // 2D floating point
 typedef struct SDL_Rect alinalib_Rect;      // 2D rectangle
 typedef struct SDL_FRect alinalib_FRect;    // 2D floating point rectangle
+
+// ╔══════════════════════════════════════════════════════════╗
+// ║                          DEFINE                           ║
+// ╚══════════════════════════════════════════════════════════╝
+#define ALINALIB_DEFAULT_FONT_SIZE 32
 
 // ╔══════════════════════════════════════════════════════════╗
 // ║                          COLORS                           ║
@@ -116,6 +117,15 @@ extern "C"
     void alinalib_drawLine(alinalib_Context *ctx,
                            alinalib_Point p1,
                            alinalib_Point p2,
+                           alinalib_Color color);
+
+    // ────────────────────────────────────────────────────────────────
+    //                             TIME
+    // ────────────────────────────────────────────────────────────────
+    TTF_Font *alinalib_loadFont(const char *filePath, int size);
+    void alinalib_drawText(alinalib_Context *ctx,
+                           const char *text,
+                           alinalib_Point position,
                            alinalib_Color color);
 
     // ────────────────────────────────────────────────────────────────

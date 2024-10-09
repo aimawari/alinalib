@@ -35,6 +35,8 @@ int main(int argc, char* argv[])
                             rectSize},
             RED);
 
+        alinalib_drawText(ctx, "Hello World", (alinalib_Point){0, 0}, WHITE);
+
         printf("dt: %.2f\n", ctx->time.deltaTime);
         printf("FPS: %.2f\n", ctx->time.currentFps);
 
