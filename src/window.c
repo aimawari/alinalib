@@ -1,9 +1,14 @@
 #include "alinalib.h"
 
-extern void alinalib__timeInit(alinalib_Time *time);
-extern void alinalib__timeStartFrame(alinalib_Time *time);
-extern void alinalib__timeEndFrame(alinalib_Time *time);
+extern void alinalib__timeInit(alinalib_Context *ctx);
+extern void alinalib__timeStartFrame(alinalib_Context *ctx);
+extern void alinalib__timeEndFrame(alinalib_Context *ctx);
 extern TTF_Font *alinalib__loadDefuaultFont();
+
+extern void alinalib__inputInit(alinalib_Context *ctx);
+extern void alinalib__inputStartFrame(alinalib_Context *ctx);
+extern void alinalib__inputEndFrame(alinalib_Context *ctx);
+extern void alinalib__inputHandler(alinalib_Context *ctx, SDL_Event *event);
 
 // Initializes the app context with a window and renderer
 alinalib_Context *alinalib_initContext(const char *title, int width, int height)
@@ -57,7 +62,8 @@ alinalib_Context *alinalib_initContext(const char *title, int width, int height)
     ctx->windowWidth = width;
     ctx->windowHeight = height;
 
-    alinalib__timeInit(&ctx->time);
+    alinalib__timeInit(ctx);
+    alinalib__inputInit(ctx);
 
     return ctx;
 }
@@ -77,7 +83,7 @@ void alinalib_cleanupContext(alinalib_Context *ctx)
 
     if (ctx->defaultFont)
     {
-        TTF_CloseFont(ctx->defaultFont);
+        alinalib_disposeFont(ctx->defaultFont);
     }
 
     free(ctx);
@@ -88,13 +94,15 @@ void alinalib_cleanupContext(alinalib_Context *ctx)
 // Starts a new frame for rendering
 void alinalib_startFrame(alinalib_Context *ctx)
 {
-    alinalib__timeStartFrame(&ctx->time);
+    alinalib__timeStartFrame(ctx);
 }
 
 // Ends the current frame and does any necessary updates
 void alinalib_endFrame(alinalib_Context *ctx)
 {
     SDL_RenderPresent(ctx->renderer);
+
+    alinalib__inputStartFrame(ctx);
 
     // Poll event
     SDL_Event event;
@@ -104,15 +112,10 @@ void alinalib_endFrame(alinalib_Context *ctx)
         {
             ctx->shouldClose = 1;
         }
-        if (event.type == SDL_KEYDOWN)
-        {
-            ctx->shouldClose = 1;
-        }
-        if (event.type == SDL_MOUSEBUTTONDOWN)
-        {
-            ctx->shouldClose = 1;
-        }
+
+        alinalib__inputHandler(ctx, &event);
     }
 
-    alinalib__timeEndFrame(&ctx->time);
+    alinalib__inputEndFrame(ctx);
+    alinalib__timeEndFrame(ctx);
 }
