@@ -24,7 +24,7 @@ alinalib is a personal project created to experiment with low-level game develop
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/alinalib.git
+    git clone https://github.com/aimawari/alinalib.git
     ```
 
 2. Navigate to the project directory:
