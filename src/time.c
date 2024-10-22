@@ -1,22 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "SDL_timer.h"
 #include "alinalib.h"
-
-// ╔══════════════════════════════════════════════════════════╗
-// ║                          TYPES                            ║
-// ╚══════════════════════════════════════════════════════════╝
-
-// Struct for managing time during frame rendering
-typedef struct alinalib__Time
-{
-    Uint32 frameStart;  // Time when the current frame started
-    Uint32 frameTime;   // Time taken to render the current frame (in ms)
-
-    // FPS calculation variables
-    int frameCount;       // Number of frames in the last second
-    Uint32 fpsStartTime;  // Time when FPS was last calculated
-
-    // Frame rate control
-    int targetFps;  // Desired frames per second
-} alinalib_Time;
 
 // Initializes time management variables
 void alinalib__timeInit(alinalib_Context *ctx)

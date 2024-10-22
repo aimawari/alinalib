@@ -48,8 +48,8 @@ int main(int argc, char* argv[])
 
         alinalib_drawLine(
             ctx,
-            (alinalib_Point){0, ctx->windowHeight - 20},
-            (alinalib_Point){ctx->windowWidth, ctx->windowHeight - 20},
+            (alinalib_Vector2){0, ctx->windowHeight - 20},
+            (alinalib_Vector2){ctx->windowWidth, ctx->windowHeight - 20},
             GREEN);
 
         int rectSize = 16;
@@ -60,15 +60,27 @@ int main(int argc, char* argv[])
 
         const char* helloText = "Hello World!";
 
-        alinalib_Point textSize =
+        alinalib_Vector2 textSize =
             alinalib_measureText(helloText, ctx->defaultFont);
 
         char fpsText[50];
         snprintf(fpsText, sizeof(fpsText), "FPS: %.2f", ctx->currentFps);
 
-        alinalib_Point fpsTextPosition = {ctx->windowWidth - textSize.x, 0};
+        alinalib_Vector2 fpsTextPosition = {ctx->windowWidth - textSize.x, 0};
 
-        alinalib_drawText(ctx, fpsText, &fpsTextPosition, WHITE);
+        alinalib_drawText(ctx, fpsText, fpsTextPosition, WHITE);
+
+        alinalib_drawCustomText(
+            ctx,
+            ctx->defaultFont,
+            "hello",
+            (alinalib_Vector2){(float)ctx->windowWidth / 2,
+                               (float)ctx->windowHeight / 2},
+            (alinalib_Vector2){0, 0},
+            GREEN,
+            90,
+            2,
+            BLUE);
 
         alinalib_endFrame(ctx);
     }

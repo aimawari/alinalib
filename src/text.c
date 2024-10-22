@@ -5,49 +5,73 @@
 #include "SDL_surface.h"
 #include "SDL_ttf.h"
 
-TTF_Font* alinalib__loadDefuaultFont()
+struct alinalib_TTFFont
 {
-    TTF_Font* defaultFont = alinalib_loadFont("assets/Roboto-Regular.ttf",
-                                              ALINALIB_DEFAULT_FONT_SIZE);
+    TTF_Font* data;
+};
+
+alinalib_TTFFont* alinalib__loadDefuaultFont()
+{
+    alinalib_TTFFont* defaultFont = alinalib_loadFont(
+        "assets/Roboto-Regular.ttf", ALINALIB_DEFAULT_FONT_SIZE);
 
     return defaultFont;
 }
 
-TTF_Font* alinalib_loadFont(const char* filePath, int size)
+alinalib_TTFFont* alinalib_loadFont(const char* filePath, int size)
 {
-    TTF_Font* font = TTF_OpenFont(filePath, size);
+    alinalib_TTFFont* font = malloc(sizeof(alinalib_TTFFont));
     if (font == NULL)
     {
-        printf("Failed to load font! TTF_Error: %s\n", TTF_GetError());
+        free(font);
+        return NULL;
     }
-    return font;
+    else
+    {
+        font->data = TTF_OpenFont(filePath, size);
+        if (font->data == NULL)
+        {
+            printf("Failed to load font! TTF_Error: %s\n", TTF_GetError());
+            return NULL;
+        }
+        return font;
+    }
 }
 
-void alinalib_disposeFont(TTF_Font* font)
+void alinalib_disposeFont(alinalib_TTFFont* font)
 {
-    TTF_CloseFont(font);
+    if (!font->data)
+    {
+        TTF_CloseFont(font->data);
+    }
+
+    free(font);
 }
 
-alinalib_Point alinalib_measureText(const char* text, TTF_Font* font)
+alinalib_Vector2 alinalib_measureText(const char* text, alinalib_TTFFont* font)
 {
-    alinalib_Point size;
-    TTF_SizeText(font, text, &size.x, &size.y);
+    int w, h;
+    TTF_SizeText(font->data, text, &w, &h);
+
+    alinalib_Vector2 size = {(float)w, (float)h};
 
     return size;
 }
 
-void alinalib_setFontSize(TTF_Font* font, int ptsize)
+void alinalib_setFontSize(alinalib_TTFFont* font, int ptsize)
 {
-    TTF_SetFontSize(font, ptsize);
+    TTF_SetFontSize(font->data, ptsize);
 }
 
 void alinalib_drawText(alinalib_Context* ctx,
                        const char* text,
-                       const alinalib_Point* position,
+                       const alinalib_Vector2 position,
                        const alinalib_Color color)
 {
     SDL_Surface* textSurface =
-        TTF_RenderText_Blended(ctx->defaultFont, text, color);
+        TTF_RenderText_Blended(ctx->defaultFont->data,
+                               text,
+                               (SDL_Color){color.r, color.g, color.b, color.a});
     if (!textSurface)
     {
         SDL_Log("Failed to create surface: %s", TTF_GetError());
@@ -64,7 +88,7 @@ void alinalib_drawText(alinalib_Context* ctx,
     }
 
     SDL_Rect textRect = {
-        position->x, position->y, textSurface->w, textSurface->h};
+        position.x, position.y, textSurface->w, textSurface->h};
 
     SDL_RenderCopy(ctx->renderer, texture, NULL, &textRect);
 
@@ -74,10 +98,10 @@ void alinalib_drawText(alinalib_Context* ctx,
 }
 
 void alinalib_drawCustomText(alinalib_Context* ctx,
-                             TTF_Font* font,
+                             alinalib_TTFFont* font,
                              const char* text,
-                             const alinalib_Point* position,
-                             const alinalib_Point* origin,
+                             const alinalib_Vector2 position,
+                             const alinalib_Vector2 origin,
                              const alinalib_Color color,
                              double angle,
                              int outlineWidth,
@@ -98,7 +122,12 @@ void alinalib_drawCustomText(alinalib_Context* ctx,
                 if (i == 1 && j == 1) continue;
 
                 SDL_Surface* outlineSurface =
-                    TTF_RenderText_Blended(font, text, outlineColor);
+                    TTF_RenderText_Blended(font->data,
+                                           text,
+                                           (SDL_Color){outlineColor.r,
+                                                       outlineColor.g,
+                                                       outlineColor.b,
+                                                       outlineColor.a});
                 if (!outlineSurface)
                 {
                     SDL_Log("Failed to create outline surface: %s",
@@ -115,8 +144,8 @@ void alinalib_drawCustomText(alinalib_Context* ctx,
                     return;
                 }
 
-                SDL_Rect outlineRect = {position->x + offsets[i],
-                                        position->y + offsets[j],
+                SDL_Rect outlineRect = {position.x + offsets[i],
+                                        position.y + offsets[j],
                                         outlineSurface->w,
                                         outlineSurface->h};
 
@@ -125,7 +154,7 @@ void alinalib_drawCustomText(alinalib_Context* ctx,
                                  NULL,
                                  &outlineRect,
                                  angle,
-                                 origin,
+                                 (SDL_Point*)&origin,
                                  SDL_FLIP_NONE);
 
                 // Clean up
@@ -136,7 +165,8 @@ void alinalib_drawCustomText(alinalib_Context* ctx,
     }
 
     // Render the filled text
-    SDL_Surface* textSurface = TTF_RenderText_Blended(font, text, color);
+    SDL_Surface* textSurface = TTF_RenderText_Blended(
+        font->data, text, (SDL_Color){color.r, color.g, color.b, color.a});
     if (!textSurface)
     {
         SDL_Log("Failed to create text surface: %s", TTF_GetError());
@@ -153,14 +183,14 @@ void alinalib_drawCustomText(alinalib_Context* ctx,
     }
 
     SDL_Rect textRect = {
-        position->x, position->y, textSurface->w, textSurface->h};
+        position.x, position.y, textSurface->w, textSurface->h};
 
     SDL_RenderCopyEx(ctx->renderer,
                      textTexture,
                      NULL,
                      &textRect,
                      angle,
-                     origin,
+                     (SDL_Point*)&origin,
                      SDL_FLIP_NONE);
 
     // Clean up

@@ -1,9 +1,12 @@
+#include <SDL.h>
+#include <SDL_ttf.h>
+
 #include "alinalib.h"
 
 extern void alinalib__timeInit(alinalib_Context *ctx);
 extern void alinalib__timeStartFrame(alinalib_Context *ctx);
 extern void alinalib__timeEndFrame(alinalib_Context *ctx);
-extern TTF_Font *alinalib__loadDefuaultFont();
+extern alinalib_TTFFont *alinalib__loadDefuaultFont();
 
 extern void alinalib__inputInit(alinalib_Context *ctx);
 extern void alinalib__inputStartFrame(alinalib_Context *ctx);
