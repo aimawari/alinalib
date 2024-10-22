@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <stdlib.h>
 
 #include "alinalib.h"
 
@@ -12,6 +13,7 @@ extern void alinalib__inputInit(alinalib_Context *ctx);
 extern void alinalib__inputStartFrame(alinalib_Context *ctx);
 extern void alinalib__inputEndFrame(alinalib_Context *ctx);
 extern void alinalib__inputHandler(alinalib_Context *ctx, SDL_Event *event);
+extern void alinalib__cleanupInput(alinalib_Context *ctx);
 
 // Initializes the app context with a window and renderer
 alinalib_Context *alinalib_initContext(const char *title, int width, int height)
@@ -87,6 +89,16 @@ void alinalib_cleanupContext(alinalib_Context *ctx)
     if (ctx->defaultFont)
     {
         alinalib_disposeFont(ctx->defaultFont);
+    }
+
+    if (ctx->input)
+    {
+        alinalib__cleanupInput(ctx);
+    }
+
+    if (ctx->time)
+    {
+        free(ctx->time);
     }
 
     free(ctx);

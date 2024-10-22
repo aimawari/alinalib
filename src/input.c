@@ -117,6 +117,21 @@ void alinalib__inputHandler(alinalib_Context *ctx, SDL_Event *event)
     }
 }
 
+void alinalib__cleanupInput(alinalib_Context *ctx)
+{
+    if (!ctx->input->keyboard)
+    {
+        free(ctx->input->keyboard);
+    }
+
+    if (!ctx->input->mouse)
+    {
+        free(ctx->input->mouse);
+    }
+
+    free(ctx->input);
+}
+
 int alinalib_inputIsKeyDown(alinalib_Context *ctx, const alinalib_Keycode key)
 {
     return ctx->input->keyboard->keys[key];
