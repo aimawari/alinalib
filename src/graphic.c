@@ -14,8 +14,10 @@ void alinalib_drawRectangle(alinalib_Context *ctx,
                             const alinalib_Rect rect,
                             const alinalib_Color color)
 {
+    SDL_Rect sdlRect = {(int)rect.x, (int)rect.y, (int)rect.w, (int)rect.h};
+
     SDL_SetRenderDrawColor(ctx->renderer, color.r, color.g, color.b, color.a);
-    SDL_RenderDrawRect(ctx->renderer, (SDL_Rect *)&rect);
+    SDL_RenderDrawRect(ctx->renderer, &sdlRect);
 }
 
 // Draws a filled rectangle
@@ -23,8 +25,10 @@ void alinalib_drawFilledRectangle(alinalib_Context *ctx,
                                   const alinalib_Rect rect,
                                   const alinalib_Color color)
 {
+    SDL_Rect sdlRect = {(int)rect.x, (int)rect.y, (int)rect.w, (int)rect.h};
+
     SDL_SetRenderDrawColor(ctx->renderer, color.r, color.g, color.b, color.a);
-    SDL_RenderFillRect(ctx->renderer, (SDL_Rect *)&rect);
+    SDL_RenderFillRect(ctx->renderer, &sdlRect);
 }
 
 // Draws a line between two points
